@@ -45,10 +45,4 @@ We value your feedback! If you encounter any issues, have suggestions, or want t
 
 ## License
 
-This project is licensed under the [MIT License](). Feel free to use, modify, and distribute the code as permitted by the license.
-
-## Contact
-
-For any inquiries or questions, please contact our team at team@munchly.com.
-
-Thank you for choosing Munchly! Let's embark on a delightful culinary journey together!
+This project is licensed under the [MIT License](https://github.com/zz9tf/food-app/blob/main/LICENSE). Feel free to use, modify, and distribute the code as permitted by the license.
