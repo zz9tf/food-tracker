@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { increment, decrement } from '../redux/slices/counterSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,7 +17,6 @@ export default function Home() {
         onPress={() => dispatch(decrement())}
       />
       <Text>{count}</Text>
-      <StatusBar style="auto" />
     </View>
   );
 }

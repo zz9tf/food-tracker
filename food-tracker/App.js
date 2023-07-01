@@ -1,15 +1,17 @@
 import React from "react";
 import { Provider } from "react-redux";
-import AppNavigation from './src/AppNavigation'
+import { StatusBar } from 'expo-status-bar';
+import RootNavigation from './src/AppNavigation'
+
 
 import { store } from "./src/redux/store";
 
 const App = () => {
   return (
     <Provider store={store}>
-      <AppNavigation />
+      <RootNavigation />
+      <StatusBar style="auto" />
     </Provider>
-    
   )
 }
 
