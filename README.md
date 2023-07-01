@@ -1,20 +1,13 @@
-# Munchly
+# Food-tracker
 
-Munchly is a smart and intuitive food management app that simplifies meal planning, tracking, and mindful eating.
+Food-tracker is a food management app that tracks and remind your food expiration. It also offers receipt suggestions and assists with meal planning, while also tracking your nutritional intake based on the available food items.
 
 ## Features
-Mode 1 - recepts & meal plan based on your food:
-- Track Expiration Dates: Keep a record of the expiration dates for the food items in your pantry to avoid consuming expired food.
-- Recipe Recommendations: Get personalized recipe recommendations based on the ingredients available in your home.
-
-Mode 2 - Create meal plan randomly or based on the key words you provide:
+- Shopping List Generation: Automatically generate shopping lists based on the ingredients needed for your planned meals or input by you own.
+- Food tracker: Smart Notifications: Receive timely notifications to use or restock ingredients before they expire.
+- Recepts suggestion: recommend personalized recipes based on the ingredients available in your home or key words which you offer.
 - Meal Planning: Plan your meals in advance with a user-friendly interface and drag-and-drop functionality.
-- Shopping List Generation: Automatically generate shopping lists based on the ingredients needed for your planned meals.
-
-General features
-- Smart Notifications: Receive timely notifications to use or restock ingredients before they expire.
-- Cooking Tips: Explore cooking tips and techniques to enhance your culinary skills and broaden your recipe repertoire.
-- Nutrition Tracking: Keep track of your daily nutrition intake and monitor your calorie, macronutrient, and micronutrient consumption.
+Nutrition Tracking: Keep track of your daily nutrition intake and monitor your calorie, macronutrient, and micronutrient consumption.
 
 ## Installation
 
