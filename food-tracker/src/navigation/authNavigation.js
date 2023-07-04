@@ -11,7 +11,7 @@ const Stack = createStackNavigator();
 export default function AuthNavigation() {
 
     return (
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="LoginScreen" component={Login}/>
             <Stack.Screen name="SignInScreen" component={SignIn}/>
             <Stack.Screen name="WelcomeScreen" component={Welcome}/>
