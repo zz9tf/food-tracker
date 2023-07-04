@@ -6,8 +6,8 @@ import { faHome, faCloud } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 library.add(faHome, faCloud);
 
-import Home from '../screens/home'
-import Receipts from '../screens/receipts';
+import Home from '../screens/homeScreen'
+import Receipts from '../screens/receiptsScreen';
 
 const Tab = createBottomTabNavigator();
 

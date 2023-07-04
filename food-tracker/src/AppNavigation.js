@@ -1,21 +1,29 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { auth, onAuthStateChanged } from './firebase';
+import { useDispatch, useSelector } from 'react-redux';
+
+import AuthNavigation from './navigation/authNavigation'
 import HomeNavigation from './navigation/homeNavigation'
 
-const Stack = createStackNavigator();
-
 export default function RootNavigation() {
+
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
+    useEffect(() => {
+        const redirect = onAuthStateChanged(auth, (user) => {
+            if (user.isLogin) {
+                console.log('sign in')
+                console.log(user);
+            } else {
+                console.log('sign out');
+            }
+        })
+    }, [user]);
+
     return (
         <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen 
-                    name="HomeScreenStack"
-                    component={HomeNavigation}
-                    options={{
-                        headerShown: false 
-                }}/>
-            </Stack.Navigator>
+            {user.isLogin ? (<HomeNavigation/>) : (<AuthNavigation/>)}
         </NavigationContainer>
     )
 };
