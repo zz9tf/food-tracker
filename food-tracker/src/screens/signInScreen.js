@@ -5,13 +5,14 @@ import {
   View, 
   TextInput, 
   TouchableOpacity, 
-  Image
+  Image,
+  Alert
 } from 'react-native';
-import { auth, createUserWithEmailAndPassword } from '../firebase'
-import { useSelector, useDispatch } from 'react-redux';
+import { auth, createUserWithEmailAndPassword } from '../firebase';
+import { useDispatch } from 'react-redux';
+import { loginOperation, logoutOperation } from '../redux/slices/userSlice';
 
 export default function SignIn({navigation}) {
-  const count = useSelector((state) => state.counter.value);
   const dispatch = useDispatch();
   const [email, setEmail] = useState({
     value: '', 
@@ -84,24 +85,28 @@ export default function SignIn({navigation}) {
     });
 
     setPassword({
-      password: inputPassword,
+      value: inputPassword,
       error: errorMessage,
       format: formatList
     });
   }
 
   function handleRegisteration() {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+      .then(async (userCredential) => {
         // Signed in 
-        const user = userCredential.user;
-        // ...
+        const googleUser = userCredential.user;
+        dispatch(loginOperation());
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
+        dispatch(logoutOperation());
+        if (error.message == 'Firebase: Error (auth/email-already-in-use).') {
+          Alert.alert('Sign Up Failed', 'Oh no! Email already in use!')
+        } else {
+          Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
+        }
       });
+    
   }
 
   return (
@@ -142,12 +147,14 @@ export default function SignIn({navigation}) {
               onChangeText={(inputPassword) => {checkPasswordFormat(inputPassword)}}/>
             {password.error.map((errorMessage, i) => {
               return (
-                <Text style={password.format[i]}>{errorMessage}</Text>
+                <Text key={i} style={password.format[i]}>{errorMessage}</Text>
               )
             })}
           </View>
 
-          <TouchableOpacity style={styles.NextBtn}>
+          <TouchableOpacity 
+            style={styles.NextBtn}
+            onPress={() => {handleRegisteration()}}>
               <Text style={styles.NextBtnText}>Register</Text>
           </TouchableOpacity>
           

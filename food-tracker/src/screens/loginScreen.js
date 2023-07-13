@@ -1,12 +1,53 @@
-import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  Image, 
+  Alert 
+} from 'react-native';
+import { useDispatch } from 'react-redux';
+import { loginOperation, logoutOperation } from '../redux/slices/userSlice';
+import { auth, signInWithEmailAndPassword } from '../firebase';
+
 
 export default function Login({navigation}) {
-  const count = useSelector((state) => state.counter.value);
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  
+  function handleLogin() {
+    console.log(email);
+    console.log(password);
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        let googleUser = userCredential.user;
+        dispatch(loginOperation());
+      })
+      .catch((error) => {
+        dispatch(logoutOperation());
+        if (error.message == 'Firebase: Error (auth/user-not-found).') {
+          Alert.alert('User Not Found!', 'Sorry, we can\'t find an account with this email address. Please try again or create a new account.');
+        }
+        else if (error.message == 'Firebase: Error (auth/wrong-password).') {
+          Alert.alert(
+            'Forgotten password?', 
+            'You can use your email to reset your password!',[
+              {
+                text: 'Try Again'
+              },
+              {
+                text: 'Reset Password'
+              }
+            ]);
+        } else {
+          Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
+        }
+      })
+    
+  }
   return (
     <View style={styles.container}>
       <View style={styles.logoBlock}>
@@ -20,21 +61,31 @@ export default function Login({navigation}) {
               Email
             </Text>
             <TextInput 
-              style={styles.inputText}
+              value={email}
               returnKeyType="next"
+              style={styles.inputText}
               placeholder='example@gmail.com' 
               placeholderTextColor='#A9A9A9'
               textContentType="emailAddress"
               keyboardType="email-address"
+              onChangeText={(inputEmail) => {setEmail(inputEmail)}}
             />
             <Text style={styles.passwordTitle}>
               Password
             </Text>
-            <TextInput placeholder='Password' placeholderTextColor='#A9A9A9' secureTextEntry={true} style={styles.inputText}/>
+            <TextInput 
+              value={password}
+              style={styles.inputText}
+              placeholder='Password' 
+              placeholderTextColor='#A9A9A9' 
+              secureTextEntry={true} 
+              onChangeText={(inputPassword) => {setPassword(inputPassword)}}/>
           </View>
           
-          <TouchableOpacity style={styles.NextBtn}>
-            <Text style={styles.NextBtnText}>Next</Text>
+          <TouchableOpacity 
+            style={styles.NextBtn}
+            onPress={() => {handleLogin()}}>
+            <Text style={styles.NextBtnText}>Let's go</Text>
           </TouchableOpacity>
 
           <View style={styles.footView}>

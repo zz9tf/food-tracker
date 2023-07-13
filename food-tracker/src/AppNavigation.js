@@ -8,18 +8,18 @@ import HomeNavigation from './navigation/homeNavigation'
 
 export default function RootNavigation() {
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
-    useEffect(() => {
-        const redirect = onAuthStateChanged(auth, (user) => {
-            if (user.isLogin) {
-                console.log('sign in')
-                console.log(user);
-            } else {
-                console.log('sign out');
-            }
-        })
-    }, [user]);
+    // useEffect(() => {
+    //     const redirect = onAuthStateChanged(auth, (googleUser) => {
+    //         if (user.isLogin) {
+    //             console.log('sign in')
+    //             console.log(user);
+    //         } else {
+    //             console.log('sign out');
+    //         }
+    //     })
+    // }, [user]);
 
     return (
         <NavigationContainer>

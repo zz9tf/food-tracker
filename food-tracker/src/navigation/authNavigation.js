@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack'
-import { useDispatch, useSelector } from 'react-redux';
 
 import Login from '../screens/loginScreen'
 import SignIn from '../screens/signInScreen'

@@ -5,7 +5,7 @@ const userSlice = createSlice({
     initialState: {
         isLogin: false
     },
-    reducer: {
+    reducers: {
         loginOperation: (state) => {
             state.isLogin = true;
         },
