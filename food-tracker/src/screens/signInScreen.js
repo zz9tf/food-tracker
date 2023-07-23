@@ -11,6 +11,8 @@ import {
 import { auth, createUserWithEmailAndPassword } from '../firebase';
 import { useDispatch } from 'react-redux';
 import { loginOperation, logoutOperation } from '../redux/slices/userSlice';
+import axios from 'axios';
+import Config from '../../config';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
@@ -91,21 +93,57 @@ export default function SignIn({navigation}) {
     });
   }
 
-  function handleRegisteration() {
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-      .then(async (userCredential) => {
-        // Signed in 
-        const googleUser = userCredential.user;
-        dispatch(loginOperation());
-      })
-      .catch((error) => {
-        dispatch(logoutOperation());
-        if (error.message == 'Firebase: Error (auth/email-already-in-use).') {
-          Alert.alert('Sign Up Failed', 'Oh no! Email already in use!')
-        } else {
-          Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
-        }
-      });
+  async function handleRegisteration() {
+    // createUserWithEmailAndPassword(auth, email.value, password.value)
+    //   .then(async (userCredential) => {
+    //     // Signed in 
+    //     const googleUser = userCredential.user;
+    //     dispatch(loginOperation());
+    //   })
+    //   .catch((error) => {
+    //     dispatch(logoutOperation());
+    //     if (error.message == 'Firebase: Error (auth/email-already-in-use).') {
+    //       Alert.alert('Sign Up Failed', 'Oh no! Email already in use!')
+    //     } else {
+    //       Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
+    //     }
+    //   });
+    if (JSON.stringify(email.format) != JSON.stringify(styles.correctFormat)) {
+      Alert.alert('Sign Up Failed', 'Please input a valid email.')
+      return;
+    } 
+    for (let i = 0; i < password.format.length; i++) {
+      if (JSON.stringify(password.format[i]) != JSON.stringify(styles.correctFormat)) {
+        Alert.alert('Sign Up Failed', 'Please input a valid password.')
+        return;
+      }
+    }
+    try {
+      const dataToSend = {
+        username: email.value,
+        email: email.value,
+        password: password.value
+      }
+      const backendUrl = Config.mode === 'dev' ? Config.dev.backendUrl : Config.test.backendUrl;
+      const response = await axios.post(backendUrl + '/users/register', dataToSend);
+      console.log('Register response: \n', response.data);
+      dispatch(loginOperation({
+        username: email.value,
+        email: email.value,
+        passwrod: password.value
+      }));
+
+    } catch (error) {
+      if (error.response.data.message === 'Username already registered!') {
+        Alert.alert('Sign Up Failed', 'Oh no! Username already in use!')  
+      } else if (error.response.data.message === 'Email already registered!') {
+        Alert.alert('Sign Up Failed', 'Oh no! Email already in use!')
+      } else {
+        Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' 
+        + 'An error happened in sending data to backend in register process:\n'
+        + JSON.stringify(error.response.data));
+      }
+    }
     
   }
 

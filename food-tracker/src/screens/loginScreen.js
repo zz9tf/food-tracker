@@ -11,6 +11,8 @@ import {
 import { useDispatch } from 'react-redux';
 import { loginOperation, logoutOperation } from '../redux/slices/userSlice';
 import { auth, signInWithEmailAndPassword } from '../firebase';
+import axios from 'axios';
+import Config from '../../config';
 
 
 export default function Login({navigation}) {
@@ -18,34 +20,76 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   
-  function handleLogin() {
-    console.log(email);
-    console.log(password);
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        let googleUser = userCredential.user;
-        dispatch(loginOperation());
-      })
-      .catch((error) => {
-        dispatch(logoutOperation());
-        if (error.message == 'Firebase: Error (auth/user-not-found).') {
-          Alert.alert('User Not Found!', 'Sorry, we can\'t find an account with this email address. Please try again or create a new account.');
-        }
-        else if (error.message == 'Firebase: Error (auth/wrong-password).') {
-          Alert.alert(
-            'Forgotten password?', 
-            'You can use your email to reset your password!',[
-              {
-                text: 'Try Again'
-              },
-              {
-                text: 'Reset Password'
-              }
-            ]);
-        } else {
-          Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
-        }
-      })
+  async function handleLogin() {
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Login Failed', 'Please input a valid email.');
+      return;
+    }
+    const passwordRegexs = [ 
+      /\d/, 
+      /^.{8,}$/,
+      /[a-z]/,
+      /[A-Z]/
+    ]
+    for (let i = 0; i < passwordRegexs.length; i++) {
+      if (!passwordRegexs[i].test(password)) {
+        Alert.alert('Login Failed', 'Please input a valid password.');
+        return;
+      }
+    }
+
+    try {
+      const dataToSend = {
+        email: email,
+        password: password
+      }
+      const backendUrl = Config.mode == 'dev' ? Config.dev.backendUrl : Config.test.backendUrl;
+      const response = await axios.post(backendUrl + '/users/login', dataToSend);
+      console.log(JSON.stringify(response.data));
+      dispatch(loginOperation({
+        username: response.data.username,
+        email: response.data.emial,
+        password: response.data.password
+      }));
+    } catch (error) {
+      if (error.response.data.message === 'email not found') {
+        Alert.alert('Login Failed', 'Sry! Email is not found.T^T');
+      } else if (error.response.data.message === 'Wrong password'){
+        Alert.alert('Login Failed', 'Your password is incorrect.T^T')  
+      } else {
+        Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' 
+        + 'An error happened in sending data to backend in register process:\n'
+        + JSON.stringify(error.response.data));
+      }
+    }
+
+    // signInWithEmailAndPassword(auth, email, password)
+    //   .then((userCredential) => {
+    //     let googleUser = userCredential.user;
+    //     dispatch(loginOperation());
+    //   })
+    //   .catch((error) => {
+    //     dispatch(logoutOperation());
+    //     if (error.message == 'Firebase: Error (auth/user-not-found).') {
+    //       Alert.alert('User Not Found!', 'Sorry, we can\'t find an account with this email address. Please try again or create a new account.');
+    //     }
+    //     else if (error.message == 'Firebase: Error (auth/wrong-password).') {
+    //       Alert.alert(
+    //         'Forgotten password?', 
+    //         'You can use your email to reset your password!',[
+    //           {
+    //             text: 'Try Again'
+    //           },
+    //           {
+    //             text: 'Reset Password'
+    //           }
+    //         ]);
+    //     } else {
+    //       Alert.alert('Unknown Error', 'Please connect with developer about Error: \n' + error.message)
+    //     }
+    //   })
+
     
   }
   return (
